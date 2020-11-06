@@ -1,3 +1,4 @@
+#%%
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -15,8 +16,15 @@ def V_prima(coefs,V):
     Er = V[1]
     Hl = V[2]
     Hr = V[3]
-    El_prima = (-El + M*(L -a*Er + e*El -g*Hl))/tau
-    Er_prima = (-Er + M*(R - a*El + e*Er - g*Hr))/tau
+
+    El_temp = (L -a*Er + e*El -g*Hl)
+    El_temp = El_temp if El_temp>0 else 0
+
+    Er_temp = (R - a*El + e*Er - g*Hr)
+    Er_temp = Er_temp if Er_temp>0 else 0
+
+    El_prima = (-El + M*El_temp)/tau
+    Er_prima = (-Er + M*Er_temp)/tau
     Hl_prima = (-Hl + El)/tauh
     Hr_prima = (-Hr + Er)/tauh
     resultado = np.array([El_prima, Er_prima, Hl_prima, Hr_prima])
@@ -63,14 +71,14 @@ def despliega_integracion(integracion):
 # %%
     
  
-M = 1.2
+M = 0.5
 a = 3.4
 e = 0.1
 g = 3
-L = 0.2
+L = 0.8
 tau = 15
 tauh = 1000
-R = 0.8
+R = 0.6
 
 coefs = [M,a,e,g,L,tau,tauh,R]
 
@@ -82,7 +90,7 @@ V0= np.array([El0, Er0, Hl0, Hr0])
     
 dt= 5
 t0= 0
-T= 500
+T= 20000
 
 integracion = integra_runge_kutta(coefs,V0,t0,T,dt)
 variables = despliega_integracion(integracion)
@@ -97,3 +105,7 @@ plt.plot(t, Er, label= 'Er')
 # plt.plot(t, Hr, label = 'Hr')
 plt.xlabel('tiempo')
 plt.legend()
+#plt.yscale('log')
+plt.show()
+
+# %%
