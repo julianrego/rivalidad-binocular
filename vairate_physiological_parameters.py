@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from itertools import product
 from scipy.integrate import odeint
+import matplotlib.pyplot as plt
 #%%
 
 R = 1.0
@@ -25,15 +26,17 @@ Hr0 = 0
 V0= np.array([El0, Er0, Hl0, Hr0])
 
 # time points
-t = np.linspace(0,50000, 2500)
+t = np.linspace(0,50000, 5000)
 #%%
+
+puntos = 40
+
 #vario M
 results_M = []
 print("variando \'M\'")
-M_values = np.linspace(0, 5, 25)
+M_values = np.linspace(0, 5, puntos)
 for M_i in M_values:
-    print(M_i)
-    print(np.where(M_values == M_i))
+    
     if np.where(M_values == M_i)[0]%5==0:
         print(f'Iteracion N° {np.where(M_values == M_i)[0] + 1}')
 
@@ -57,7 +60,7 @@ for M_i in M_values:
 #vario a
 print("variando \'a\'")
 results_a = []
-a_values = np.linspace(0, 5, 25)
+a_values = np.linspace(0, 5, puntos)
 for a_i in a_values:
 
     if np.where(a_values == a_i)[0] %5==0:
@@ -83,7 +86,7 @@ for a_i in a_values:
 #vario e
 print("variando \'e\'")
 results_e = []
-e_values = np.linspace(0, 5, 25)
+e_values = np.linspace(0, 5, puntos)
 for e_i in e_values:
 
     if np.where(e_values == e_i)[0]%5==0:
@@ -109,7 +112,7 @@ for e_i in e_values:
 #vario g
 print("variando \'g\'")
 results_g = []
-g_values = np.linspace(0, 5, 25)
+g_values = np.linspace(0, 5, puntos)
 for g_i in g_values:
    
     if np.where(g_values == g_i)[0]%5==0:
@@ -136,5 +139,17 @@ df_M = pd.DataFrame(results_M)
 df_a = pd.DataFrame(results_a)
 df_e = pd.DataFrame(results_e)
 df_g = pd.DataFrame(results_g)
+
+# %%
+
+plt.plot(df_M.M, df_M.dominancia_derecho/1000, '-o', label = 'M')
+plt.plot(df_a.a, df_a.dominancia_derecho/1000, '-o', label = 'a')
+plt.plot(df_e.e, df_e.dominancia_derecho/1000, '-o', label = 'e')
+plt.plot(df_g.g, df_g.dominancia_derecho/1000, '-o', label = 'g')
+
+plt.xlabel('Valor del parametro')
+plt.ylabel('Tiempo de dominancia (s)')
+plt.legend()
+plt.show()
 
 # %%
