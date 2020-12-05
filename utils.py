@@ -106,6 +106,10 @@ def get_dominance_distribution(estimulo_derecho, estimulo_izquierdo, t):
     derecho = derecho[1:-1]
     izquierdo = izquierdo[1:-1]
 
+    #los hago del mismo largo
+    min_len = min(len(derecho), len(izquierdo))
+    derecho = derecho[:min_len-1]
+    izquierdo = izquierdo[:min_len-1]
     results = {
         'derecho':derecho,
         'izquierdo':izquierdo
@@ -169,12 +173,55 @@ def V_prima_random(V, t,coefs):
     Er_temp = (R - a*El + e*Er - g*Hr)
     Er_temp = Er_temp if Er_temp>0 else 0
 
-    random_kick = sigma * np.random.randn()
+    random_kick_l = sigma * np.random.randn()
+    random_kick_r = sigma * np.random.randn()
 
     El_prima = (-El + M*El_temp)/tau
     Er_prima = (-Er + M*Er_temp)/tau
-    Hl_prima = (-Hl + El)/tauh + random_kick
-    Hr_prima = (-Hr + Er)/tauh + random_kick
+    Hl_prima = (-Hl + El)/tauh + random_kick_l
+    Hr_prima = (-Hr + Er)/tauh + random_kick_r
     resultado = np.array([El_prima, Er_prima, Hl_prima, Hr_prima])
     
     return(resultado)
+
+
+def integration_ode(function, initial_conditions, tmax, tstep,  method = 'runge_kutta2', **kwargs):
+    
+        
+    """ 'function' is the function to be integrated.
+    
+    initial_condition must be an array of len(number of variables of the system)
+    
+    tmax is the  final time of integration
+
+    tstep: step of integration
+
+    method: method of integration.
+
+    In **kwargs the parameters of the system of equations (other than time) should be passed.
+
+    It returns a matrix of the form X = (time, variable)
+ 
+    """
+    num_steps = int(tmax/tstep)
+    num_variables = len(initial_conditions)
+
+    tpoints, X  = np.arange(0, tmax, tstep), np.zeros( shape = (num_steps, num_variables))
+
+    R = initial_conditions
+
+    if method == 'runge_kutta2':
+      print('Method of integration: ', method)
+      for t in range(num_steps):
+          X[t][::] = R
+          k1 = tstep*function(R, t, **kwargs)
+          k2 = tstep*function(R + 0.5*k1, t + 0.5, **kwargs)
+          R += k2
+    
+    elif method == 'euler':
+      print('Method of integration: ', method)
+      for t in range(num_steps):
+        X[t][::] = R
+        R += tstep*function(R, t, **kwargs)
+      
+    return X
