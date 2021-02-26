@@ -144,7 +144,7 @@ df_g = pd.DataFrame(results_g)
 
 plt.plot(df_M.M, df_M.dominancia_derecho/1000, '-o', label = 'M')
 plt.plot(df_a.a, df_a.dominancia_derecho/1000, '-o', label = 'a')
-plt.plot(df_e.e, df_e.dominancia_derecho/1000, '-o', label = 'e')
+plt.plot(df_e.e, df_e.dominancia_derecho/1000, '-o', label = '$\epsilon$')
 plt.plot(df_g.g, df_g.dominancia_derecho/1000, '-o', label = 'g')
 
 plt.xlabel('Valor del parametro')
@@ -152,4 +152,50 @@ plt.ylabel('Tiempo de dominancia (s)')
 plt.legend()
 plt.show()
 
+# %%
+
+# %%
+#vario la intensidad de ambos impulsos
+
+puntos = 30
+
+#vario M
+results_int = []
+print("variando \'M\'")
+L_values = np.logspace(-1, 0, puntos)
+R_values = np.logspace(-1, 0, puntos)
+for L_i, R_i in zip(L_values, R_values):
+    
+    if np.where(L_values == L_i)[0]%5==0:
+        print(f'Iteracion N° {np.where(M_values == L_i)[0] + 1}')
+
+    coefs = [M,a,e,g,L_i,tau,tauh,R_i]
+    y = odeint(V_prima,V0,t, args = (coefs, ))
+
+    E_l = y[:,0]
+    E_r = y[:,1]
+
+    results = get_dominance_times(E_r, E_l, t)
+    results = {
+        'L':L_i,
+        'R':R_i,
+        'M':M, 
+        'a':a, 
+        'e':e, 
+        'g':g, 
+        'dominancia_derecho':results['derecho'], 
+        'dominancia_izquierdo':results['izquierdo']
+        }
+    results_int.append(results)
+
+
+# %%
+df = pd.DataFrame(results_int)
+plt.plot(df.L, df.dominancia_derecho/1000, '-o')#, label = 'M')
+plt.xlabel('Intensidad de ambos estimulos')
+plt.ylabel('Tiempo de dominancia (s)')
+#plt.yscale('log')
+plt.xscale('log')
+plt.legend()
+plt.show()
 # %%

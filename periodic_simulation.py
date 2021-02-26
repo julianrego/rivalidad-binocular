@@ -113,10 +113,23 @@ df_results = pd.DataFrame(final_results)
 
 #%%
 
+#tiempos de dominancia variando la intencidad
+
 plt.plot(df_results.L, df_results.dominancia_derecho/1000, 'o-', label='Ojo derecho')
 plt.plot(df_results.L, df_results.dominancia_izquierdo/1000, 'o-', label='Ojo izquierdo')
 
 plt.ylabel('Tiempos de dominancia (s)')
+plt.xlabel('Fuerza del estimulo más debil (ojo izquierdo)')
+plt.legend()
+plt.show()
+
+#%%
+#predominancia en funcion de intensidad de estimulo
+
+plt.plot(df_results.L, df_results.dominancia_izquierdo/(df_results.dominancia_derecho+df_results.dominancia_izquierdo ), 'o-', label='Ojo izquierdo')
+
+
+plt.ylabel('Fraccion de tiempo de predominancia')
 plt.xlabel('Fuerza del estimulo más debil (ojo izquierdo)')
 plt.legend()
 plt.show()

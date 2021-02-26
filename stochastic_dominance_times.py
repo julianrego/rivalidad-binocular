@@ -66,3 +66,30 @@ plt.show()
 #%%
 a, loc, scale = gamma.fit(df_results.dominancia_derecho)
 # %%
+x_dist = np.linspace(0, 2500, 250)
+df_results.dominancia_derecho.hist(bins=25, density=True)
+plt.plot(x_dist, gamma.pdf(x=x_dist, loc=loc, scale=scale, a=a))
+
+plt.annotate(f'$\\gamma$ distribution: \
+    \n  a={round(a,2)}, \
+    \n  scale={round(scale,2)},  \
+    \n  loc={round(loc,2)}' , 
+    (0.65, 0.65), 
+    xycoords='axes fraction',
+    bbox=dict(boxstyle="round", fc="0.8"),
+    family='sans-serif',
+    fontsize=12
+    )
+
+plt.xlabel('Tiempo de dominancia (ms)')
+plt.ylabel('Density')
+plt.title('Distribución de tiempos de dominancia y su ajuste')
+plt.tight_layout()
+plt.legend()
+plt.show()
+
+
+
+# %%
+
+# %%
